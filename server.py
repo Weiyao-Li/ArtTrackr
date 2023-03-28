@@ -19,7 +19,8 @@ app = Flask(__name__, template_folder=tmpl_dir)
 
 
 #
-# The following is a dummy URI that does not connect to a valid database. You will need to modify it to connect to your Part 2 database in order to use the data.
+# The following is a dummy URI that does not connect to a valid database.
+# You will need to modify it to connect to your Part 2 database in order to use the data.
 #
 # XXX: The URI should be in the format of: 
 #
