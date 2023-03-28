@@ -1,0 +1,46 @@
+/* Set the font family and size for the whole page */
+body {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+}
+
+/* Style the heading */
+h1 {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Style the paragraph */
+p {
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+/* Style the buttons */
+button {
+    display: inline-block;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+/* Style the button on hover */
+button:hover {
+    background-color: #0069d9;
+}
+
+/* Style the first button differently */
+button:first-of-type {
+    background-color: #28a745;
+}
+
+/* Style the first button on hover */
+button:first-of-type:hover {
+    background-color: #218838;
+}
