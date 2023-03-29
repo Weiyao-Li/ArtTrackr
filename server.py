@@ -9,10 +9,10 @@ A debugger such as "pdb" may be helpful for debugging.
 Read about it online.
 """
 import os
-  # accessible as a variable in index.html:
+# accessible as a variable in index.html:
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
-from flask import Flask, request, render_template, g, redirect, Response
+from flask import Flask, request, render_template, g, redirect, Response, abort
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
@@ -40,7 +40,7 @@ DATABASEURI = f"postgresql://{DATABASE_USERNAME}:{DATABASE_PASSWRD}@{DATABASE_HO
 #
 # This line creates a database engine that knows how to connect to the URI above.
 #
-engine = create_engine(DATABASEURI)
+engine = create_engine(DATABASEURI, future=True)
 
 #
 # Example of running queries in your database
@@ -192,7 +192,7 @@ def add():
 @app.route('/login')
 def login():
 	abort(401)
-	this_is_never_executed()
+	# this_is_never_executed()
 
 
 if __name__ == "__main__":
@@ -220,4 +220,4 @@ if __name__ == "__main__":
 		print("running on %s:%d" % (HOST, PORT))
 		app.run(host=HOST, port=PORT, debug=debug, threaded=threaded)
 
-run()
+	run()
