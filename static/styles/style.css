@@ -52,6 +52,7 @@ button:last-of-type:hover {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
+    flex-direction: column;
 }
 
 .search-container input[type="text"] {
@@ -61,7 +62,7 @@ button:last-of-type:hover {
     border-radius: 5px;
     border: none;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-    width: calc(25% - 10px);
+    /*width: calc(25% - 10px);*/
 }
 
 .search-container button {
@@ -86,18 +87,18 @@ button:last-of-type:hover {
     margin-bottom: 20px;
 }
 
-.add-artist-container div {
+#form {
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 10px;
 }
 
-.add-artist-container div label {
+#form label {
     flex-basis: 100%;
     margin-bottom: 5px;
 }
 
-.add-artist-container div input[type="text"] {
+#form input[type="text"] {
     flex-basis: calc(50% - 5px);
     margin-right: 10px;
     padding: 10px;
@@ -105,3 +106,9 @@ button:last-of-type:hover {
     border: none;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
+
+.filters {
+    display: flex;
+}
+
+≈

@@ -1,29 +1,45 @@
-<html>
-  <style>
-    body{ 
-      font-size: 15pt;
-      font-family: arial;
-    }
-  </style>
-
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ArtTrackr</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+</head>
 <body>
-  <h1>Some famous Computer Scientists</h1>
-  <div>{{data}}</div>
+<div class="search-container">
+    <form action="/search" method="post">
+        <input type="text" name="query" placeholder="Search for art item" required>
+        <button type="submit">SEARCH</button>
+        <div class="filters">
+            <label for="title">title</label>
+            <input type="checkbox" id="title" name="title" checked>
+            <label for="artist">artist</label>
+            <input type="checkbox" id="artist" name="artist" checked>
+        </div>
+    </form>
+</div>
 
-  <div>
-    {% for n in data %}
-    <div>{{n}}</div>
-    {% endfor %}
-  </div>
+<div class="add-artist-container">
+    <form id="form">
+        <label for="artist-name">Artist Name:</label>
+        <input type="text" id="artist-name" name="artist-name">
+        <label for="artist-dob">Artist DOB:</label>
+        <input type="text" id="artist-dob" name="artist-dob">
+        <label for="art-medium">Art Medium:</label>
+        <input type="text" id="art-medium" name="art-medium">
+        <label for="creation-date">Creation Date:</label>
+        <input type="text" id="creation-date" name="creation-date">
+        <label for="dimension">Dimension:</label>
+        <input type="text" id="dimension" name="dimension">
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description">
+        <label for="patron">Patron:</label>
+        <input type="text" id="patron" name="patron">
 
-<p><a href="another">Go to the other page</a></p>
+    </form>
+    <button>ADD YOUR ARTIST</button>
+</div>
 
-<form method="POST" action="/add">
-<p>Name of new computer scientist: <input type="text" name="name"> <input type="submit" value="Add"></p>
-</form>
-
+<script src="{{ url_for('static', filename='scripts/index.js') }}"></script>
 </body>
-
-
 </html>
