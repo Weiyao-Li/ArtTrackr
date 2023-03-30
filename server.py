@@ -160,17 +160,7 @@ def index():
     return render_template("index.html", **context)
 
 
-#
-# This is an example of a different path.  You can see it at:
-# 
-#     localhost:8111/another
-#
-# Notice that the function name is another() rather than index()
-# The functions for each app.route need to have different names
-#
-@app.route('/another')
-def another():
-    return render_template("another.html")
+
 
 
 # Example of adding new data to the database
