@@ -160,9 +160,6 @@ def index():
     return render_template("index.html", **context)
 
 
-
-
-
 # Example of adding new data to the database
 @app.route('/add', methods=['POST'])
 def add():
@@ -188,9 +185,9 @@ def login():
 @app.route('/search', methods=['POST'])
 def search():
     query = request.form.get('query')
-    select_query = "SELECT title, year, name, description " \
+    select_query = "SELECT title, year, name " \
                    "FROM artwork " \
-                   "JOIN artist a ON artwork.artist_id = a.artist_id"
+                   "LEFT OUTER JOIN artist a ON artwork.artist_id = a.artist_id"
 
     dictionary = {'title': 'title', 'artist': 'name'}
     filters = list(filter(lambda x: request.form.get(x) is not None, ['title', 'artist']))
@@ -199,10 +196,10 @@ def search():
         current_filter = filters[i]
         if i == 0:
             select_query += ' WHERE '
-        select_query += dictionary[current_filter] + ' LIKE \'%' + query + '%\''
+        select_query += dictionary[current_filter] + ' LIKE \'%' + query.replace('\'', '\'\'') + '%\''
         if i < len(filters) - 1:
             select_query += ' OR '
-    print(select_query)
+
     cursor = g.conn.execute(text(select_query))
     results = []
     for result in cursor:
@@ -212,7 +209,44 @@ def search():
         results.append(temp)
     cursor.close()
     # return jsonify({'result': titles})
-    return render_template('artworks.html', results=results, heads=['Title', 'Year', 'Artist', 'Description'], query=query)
+    return render_template('results.html', results=results, heads=['Title', 'Year', 'Artist'], query=query)
+
+
+@app.route('/artwork', methods=['GET'])
+def getArtwork():
+    title = request.args.get('title')
+    select_query = "SELECT title, a.name, m.name, m.location, year, medium, description FROM artwork LEFT OUTER JOIN " \
+                   "artist a on artwork.artist_id = a.artist_id LEFT OUTER JOIN museum m on " \
+                   "artwork.on_loan_to_museum_id = m.museum_id or artwork.on_loan_from_museum_id = m.museum_id WHERE " \
+                   "artwork.title = "
+
+    select_query += "'" + title.replace('\'', '\'\'') + "'"
+    cursor = g.conn.execute(text(select_query))
+    results = []
+    for result in cursor:
+        results.append(result)
+    return render_template('artwork.html', result=results[0])
+
+
+@app.route('/artist', methods=['GET'])
+def getArtist():
+    name = request.args.get('name')
+    select_query = "SELECT name, birthplace, date_of_birth, date_of_death FROM artist WHERE name = "
+    select_query += "'" + name.replace('\'', '\'\'') + "'"
+    cursor = g.conn.execute(text(select_query))
+    results = []
+    for result in cursor:
+        results.append(result)
+    select_query = "SELECT title, year, medium FROM artwork JOIN artist a on a.artist_id = artwork.artist_id WHERE " \
+                   "name ="
+    select_query += "'" + name.replace('\'', '\'\'') + "'"
+    cursor = g.conn.execute(text(select_query))
+    artworks = []
+    for result in cursor:
+        artworks.append(result)
+    return render_template('artist.html', result=results[0], artworks=artworks)
+
+
 
 
 if __name__ == "__main__":
