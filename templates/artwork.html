@@ -37,7 +37,11 @@
         {% else %}
             <h2>Artist: {{ result[1] }}</h2>
         {% endif %}
-        <h3>Museum: {{ result[2] }}</h3>
+        {% if result[2] %}
+            <h2>Museum: <a href="/museum?name={{ result[2] }}">{{ result[2] }}</a></h2>
+        {% else %}
+            <h3>Museum: {{ result[2] }}</h3>
+        {% endif %}
         <h3>Location: {{ result[3] }}</h3>
         <p>Year: {{ result[4] }}</p>
         <p>Medium: {{ result[5] }}</p>

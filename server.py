@@ -11,7 +11,8 @@ import os
 # accessible as a variable in index.html:
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
-from flask import Flask, request, render_template, g, redirect, Response, abort, jsonify
+from flask import Flask, request, render_template, g, redirect, Response, abort, jsonify, url_for
+from datetime import datetime
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
@@ -161,17 +162,19 @@ def index():
 
 
 # Example of adding new data to the database
-@app.route('/add', methods=['POST'])
-def add():
-    # accessing form inputs from user
-    name = request.form['name']
+@app.route('/add_artwork', methods=['POST'])
+def add_Artwork():
+    select_query = "SELECT artist_id, name FROM artist"
+    cursor = g.conn.execute(text(select_query))
+    results = []
+    for result in cursor:
+        results.append(result)
+    return render_template('add_artwork.html', artists=results)
 
-    # passing params in for each variable into query
-    params = {}
-    params["new_name"] = name
-    g.conn.execute(text('INSERT INTO test(name) VALUES (:new_name)'), params)
-    g.conn.commit()
-    return redirect('/')
+
+@app.route('/add_artist', methods=['POST'])
+def add_Artist():
+    return render_template('add_artist.html')
 
 
 @app.route('/login')
@@ -247,6 +250,59 @@ def getArtist():
     return render_template('artist.html', result=results[0], artworks=artworks)
 
 
+@app.route('/museum', methods=["GET"])
+def getMuseum():
+    name = request.args.get('name')
+    select_query = "SELECT * FROM museum WHERE name = "
+    select_query += "'" + name.replace('\'', '\'\'') + "'"
+    cursor = g.conn.execute(text(select_query))
+    museums = []
+    for result in cursor:
+        museums.append(result)
+    museum = museums[0]
+    select_query = "SELECT title, year, a.name FROM artwork JOIN artist a on a.artist_id = artwork.artist_id " \
+                   "WHERE on_loan_from_museum_id = '%s' OR on_loan_to_museum_id = '%s'" % (
+                       museum[0].replace('\'', '\'\''), museum[0].replace('\'', '\'\''))
+    cursor = g.conn.execute(text(select_query))
+    artworks = []
+    for result in cursor:
+        artworks.append(result)
+    return render_template('museum.html', museum=museum, artworks=artworks)
+
+
+@app.route('/submit_artwork', methods=["POST"])
+def addArtwork():
+    title = request.form.get('title')
+    artist_id = int(request.form.get('artist'))
+    year = int(request.form.get('year'))
+    description = request.form.get('description')
+    medium = request.form.get('medium')
+
+    query = "INSERT INTO artwork (title, year, description, medium, artist_id) VALUES ('%s', '%d', '%s', '%s', '%d');" % (
+        title.replace('\'', '\'\''), year, description.replace('\'', '\'\''), medium.replace('\'', '\'\''), artist_id)
+
+    g.conn.execute(text(query))
+    g.conn.commit()
+    return redirect(url_for('index'))
+
+
+@app.route('/submit_artist', methods=["POST"])
+def addArtist():
+    print(request.form)
+    name = request.form.get('name')
+    birthplace = request.form.get('birth_place')
+    dob = datetime.strptime(request.form.get('date_of_birth'), '%Y-%m-%d').date()
+
+    query = "INSERT INTO artist (name, birthplace, date_of_birth) VALUES ('%s', '%s', '%s');" % (
+        name.replace('\'', '\'\''), birthplace.replace('\'', '\'\''), dob)
+
+    if request.form.get('date_of_death') != '':
+        dod = datetime.strptime(request.form.get('date_of_death'), '%Y-%m-%d').date()
+        query = "INSERT INTO artist (name, birthplace, date_of_birth, date_of_death) VALUES ('%s', '%s', '%s', '%s');" % (
+            name.replace('\'', '\'\''), birthplace.replace('\'', '\'\''), dob, dod)
+    g.conn.execute(text(query))
+    g.conn.commit()
+    return redirect(url_for('index'))
 
 
 if __name__ == "__main__":
