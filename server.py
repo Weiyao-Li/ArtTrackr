@@ -269,7 +269,6 @@ def getMuseum():
         artworks.append(result)
     return render_template('museum.html', museum=museum, artworks=artworks)
 
-
 @app.route('/submit_artwork', methods=["POST"])
 def addArtwork():
     title = request.form.get('title')
